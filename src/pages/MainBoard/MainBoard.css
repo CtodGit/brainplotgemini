@@ -61,9 +61,36 @@
   padding: 2rem;
 }
 
-.board-container, .characters-container, .script-container {
-  max-width: 1200px;
-  margin: 0 auto;
+.settings-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.acts-grid {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  min-height: 400px;
+}
+
+.layout-vertical .acts-grid {
+  flex-direction: column;
+}
+
+.layout-horizontal .acts-grid {
+  flex-direction: row;
+  overflow-x: auto;
+  padding-bottom: 2rem;
+}
+
+.act-column {
+  flex: 1;
+  min-width: 300px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1.5rem;
 }
 
 /* Adjust navigation icons for this layout */

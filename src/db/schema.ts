@@ -6,6 +6,9 @@ export const SCHEMA_SQL = `
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     act_structure INTEGER DEFAULT 3,
+    layout_direction TEXT DEFAULT 'vertical',
+    primary_color TEXT DEFAULT '#000000',
+    secondary_color TEXT DEFAULT '#ff0000',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );

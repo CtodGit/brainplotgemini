@@ -37,12 +37,31 @@ This file outlines the project tasks in a sequential, layer-by-layer progression
 *Build the primary UI container for each level of the application hierarchy.*
 
 ✅ [x] **Task #4: Level 0 Page — The Landing Page (Project Manager)**
-  - Create the main view for listing, creating, loading, exporting, and deleting projects from the OPFS database.
+  - Center "BrainPlot" title and provide "Create Project" and "Load Project" actions.
+  - Implement "Create Project" modal:
+    - Text field for name with "no spaces" validation and reminder text.
+    - Toggle for 3-Act vs 5-Act structure.
+    - Submit button glows when the form is valid.
+  - Implement "Load Project" modal:
+    - Display list of existing projects with selection state.
+    - Load button glows when a project is selected.
 
-✅ [x] **Task #5: Level 1 Page — The Main Board & Global Libraries**
+- [ ] **Task #5: Level 1 Page — The Main Board & Global Libraries**
   - Implement the primary tab bar: "Main Board" | "Characters" | "Script".
   - Scaffold the "Main Board" as a container for the future scene timeline.
   - Scaffold the "Characters" and "Script" tabs as containers for their respective global libraries.
+  - Integrate a Gear icon in the tab bar for board-specific settings.
+
+- [ ] **Task #5.5: Level 1.5 Page — The Settings Menu (Dropdown & Theme Selector)**
+  - Implement a dropdown for the Gear icon with:
+    - Act Toggle: Switch between 3 and 5 acts (dynamically display the alternative).
+    - Layout Toggle: Vertical (Desktop default) vs. Horizontal (Mobile default) rows.
+    - "Select Theme" option to open the Theme Selector window.
+  - Implement the Theme Selector window:
+    - Top-right Dark/Light mode toggle.
+    - Dynamic list of genre-specific themes based on the selected mode.
+    - Instant UI update and project save upon theme selection.
+  - Integrate Circle-X on the menu to save state and return to the Level 1 board.
 
 - [ ] **Task #6: Level 2 Page — The Detail View (Universal Modal)**
   - Develop the universal 85% viewport, centered modal for detail views.

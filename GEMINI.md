@@ -27,22 +27,40 @@ This file outlines the project tasks in a sequential, layer-by-layer progression
   - Set up SQL triggers for automated data synchronization (e.g., character names).
 
 ✅ [x] **Task #3: Universal Systems — Theming & Navigation**
-  - Build the theme context/provider for dark/light mode switching.
-  - Implement universal navigation controls: Circle-X (exit), Gear icon (edit), and the double-tap entry protocol.
+  - Build the dynamic custom theme context/provider for Primary/Secondary color selection.
+  - Implement automatic text contrast (Black/White) based on background brightness.
+  - Implement universal navigation controls: Glowing Circle-X (exit) and minimalist 1px Gear icon (settings).
+  - Build the `useDoubleTap` entry protocol for card interactions.
 
-- [ ] **Audit 1: Foundational Setup Review**
-  - Run `npm run preview` to verify that the project scaffolds correctly, basic theming is applied, and the universal navigation elements are present and function as expected.
+✅ [x] **Audit 1: Foundational Setup Review**
+  - Verify project scaffolding, custom theming, and universal navigation elements.
 
 ## Phase 2: Page Scaffolding — The Matryoshka Layers (Tasks 4-10 & Audit)
 *Build the primary UI container for each level of the application hierarchy.*
 
 ✅ [x] **Task #4: Level 0 Page — The Landing Page (Project Manager)**
-  - Create the main view for listing, creating, loading, exporting, and deleting projects from the OPFS database.
+  - Center "BrainPlot" title with secondary color glow effect.
+  - Standardize "Create", "Load", and "Import" buttons with uniform sizing and centering.
+  - Implement "Create Project" modal with "no spaces" name validation and 3/5 Act toggle.
+  - Implement "Load Project" modal with project list and selection highlighting.
+  - Add Export (download) and Import (upload) functionality for project files (.brainplot).
+  - Integrate global Theme Selector (color pickers) directly on the landing page.
 
 ✅ [x] **Task #5: Level 1 Page — The Main Board & Global Libraries**
   - Implement the primary tab bar: "Main Board" | "Characters" | "Script".
-  - Scaffold the "Main Board" as a container for the future scene timeline.
-  - Scaffold the "Characters" and "Script" tabs as containers for their respective global libraries.
+  - Scaffold the "Main Board" as a container for the scene timeline.
+  - Integrate a Gear icon in the tab bar for board-specific settings.
+
+✅ [x] **Task #5.5: Level 1.5 Page — The Settings Menu (Dropdown & Theme Selector)**
+  - Implement a dropdown for the Gear icon with:
+    - Act Toggle: Switch between 3 and 5 acts (dynamically display the alternative).
+    - Layout Toggle: Vertical (Desktop default) vs. Horizontal (Mobile default) rows.
+    - "Theme Colors" option to open the custom color picker window.
+  - Implement the custom Color Picker window:
+    - Primary and Secondary color selection with Hex input.
+    - Opaque, theme-aware surface colors for all modals.
+    - "Reset to Default" button for quick theme recovery.
+  - Integrate Circle-X on all menus to save state and return to the previous level.
 
 - [ ] **Task #6: Level 2 Page — The Detail View (Universal Modal)**
   - Develop the universal 85% viewport, centered modal for detail views.

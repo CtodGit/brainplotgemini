@@ -1,29 +1,41 @@
 // src/db/worker.ts
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
+import sqlite3WasmUrl from '@sqlite.org/sqlite-wasm/sqlite3.wasm?url';
 import { SCHEMA_SQL } from './schema';
 
 // Define types for the SQLite module
-type SQLiteModule = Awaited<ReturnType<typeof sqlite3InitModule>>;
-
 // Using 'any' for db initially, will refine if possible later.
-// The instance returned by new SQL.oo1.OpfsDb is actually a DB instance.
 let db: any = null;
-let SQL: SQLiteModule | null = null; // Store the initialized SQLite module
+let SQL: any = null;
 
 self.onmessage = async (e: MessageEvent) => {
   const { id, action, params } = e.data;
 
   try {
     if (action === 'init') {
+      console.log('Worker: Received init action');
       if (!SQL) {
-        SQL = await sqlite3InitModule(); // Initialize the SQLite WASM module
+        console.log('Worker: Initializing sqlite3InitModule with URL:', sqlite3WasmUrl);
+        try {
+          SQL = await (sqlite3InitModule as any)({
+            locateFile: (file: string) => {
+              if (file.endsWith('.wasm')) {
+                return sqlite3WasmUrl;
+              }
+              return file;
+            }
+          }); 
+          console.log('Worker: sqlite3InitModule initialized.');
+        } catch (e) {
+          console.error('Worker: sqlite3InitModule FAILED', e);
+          throw e;
+        }
       }
 
-      // Initialize database with OPFS
-      if (!db && SQL) { // Ensure SQL is initialized
+      if (!db && SQL) {
+        console.log('Worker: Opening OpfsDb...');
         db = new SQL.oo1.OpfsDb('/BrainPlotDB.sqlite3');
-        // The OpfsDb constructor returns an instance of sqlite3.oo1.DB
-        // which has the .exec() method.
+        console.log('Worker: OpfsDb opened.');
       }
 
       if (db) { // Ensure db is not null before using exec
@@ -34,6 +46,11 @@ self.onmessage = async (e: MessageEvent) => {
 
       // Signal that the worker is ready
       self.postMessage({ id: 'worker-ready', result: 'Database worker is ready.' });
+    } else if (action === 'export') {
+      if (!db) throw new Error('Database not initialized.');
+      // exportDb returns a Uint8Array of the database file
+      const result = SQL.capi.sqlite3_js_db_export(db);
+      self.postMessage({ id, result }, { transfer: [result.buffer] } as any);
     } else if (action === 'exec') {
       if (!db) throw new Error('Database not initialized.'); // Ensure db is not null
       const result = db.exec({
