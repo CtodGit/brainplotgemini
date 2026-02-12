@@ -1,0 +1,248 @@
+===============================================================================
+OFFICIAL PROJECT SPECIFICATIONS: NOIR STORYBOARD & SCREENWRITING SUITE
+UPDATED WITH FULL CLARIFICATIONS
+===============================================================================
+
+ARCHITECTURE
+_______________________________________________________________________________
+- TYPE: Pure client-side Progressive Web App (PWA)
+- FRONTEND: React + Vite (TypeScript)
+- DATABASE: sql.js (SQLite compiled to WebAssembly, runs in browser)
+- STORAGE: Origin Private File System (OPFS) for persistent local DB storage
+- OFFLINE: Service Worker + Workbox — fully functional offline after first load
+- FILE I/O: File System Access API + <input> fallback for import/export .sqlite.db
+- EXPORT: Client-side (jsPDF, custom .fdx/.fadein writers)
+- HOSTING: Any static host (GitHub Pages, Cloudflare Pages, etc.)
+- FUTURE: Cloudflare Workers + D1 for auth/cloud sync (Phase 7+)
+- SCHEMA: Must remain Cloudflare D1-compatible for future migration parity
+
+
+0. UNIVERSAL NAVIGATION & SYSTEM LOGIC
+_______________________________________________________________________________
+- ENTRY PROTOCOL: Double-Tap/Double-Click is the universal command to enter a
+  deeper level of the hierarchy (e.g., Timeline -> Detail -> Workshop).
+- EXIT PROTOCOL: A themed "Circle X" button, fixed to the Top-Left of the
+  viewport, is the universal command to surface to the parent level.
+- GEAR ICON: Fixed to the Top-Right, symmetrical with Circle-X across the
+  vertical centerline. Toggles "Edit Mode" in all detail views.
+- DELETE BUTTON: Available in edit mode for every card. Universal position
+  across all detail views.
+- APPLY BUTTON: Visible in edit mode to confirm and save changes.
+- AUTO-SAVE: Tapping the "Circle X" in any Scripting or Inspiration Board
+  view triggers an automatic commit to the SQLite database. Adding a card
+  to any board also triggers an immediate auto-save.
+- BLUR/DIM: Parent views must blur and dim when a child modal (Level 2 or 4)
+  is active to maintain visual focus on the current task.
+- INTERACTION: All buttons and interactive elements must provide visual
+  feedback and adhere to industry-standard positioning.
+- DROPDOWN SELECTOR: Universal component — any time a button or field has
+  options, a list expands out of it presenting the options to select.
+- EXCEPTION: Scripting Dock (Level 3.5) accessed via a tab on the
+  middle-left of the screen (tap to expand / tap to collapse).
+
+
+1. VISUAL IDENTITY AND THEMING
+_______________________________________________________________________________
+- PRIMARY FONT: Courier Prime (fixed-width, typewriter style).
+- THEMES: Noir (Default: high-contrast, red accents), Horror, Drama, Comedy,
+  Sci-Fi, Western, Romance, Action, Thriller, Mystery, Greyscale, Rainbow.
+- VARIANTS: Each theme must support both Light and Dark modes.
+- COLOR OVERRIDES: Manual card color selections in Edit Mode override global
+  themes. Color pickers must be custom swatch bars (no native OS pickers).
+- CSS: All theming must use CSS variables for instantaneous switching.
+- BUILD ORDER: Noir theme built first and fully designed. Remaining 11 themes
+  added later, each matching the vibe of its genre.
+- PERSISTENCE: Theme/Mode selections saved to localStorage.
+
+
+2. GLOBAL LIBRARIES & NAVIGATION (LEVEL 1)
+_______________________________________________________________________________
+- LEVEL 1 TAB BAR: Three tabs at the top — "Main Board" | "Characters" |
+  "Script". Visually clean, themed, uniform style. Main Board is default.
+
+- THE MAIN BOARD: The chronological timeline view (Scenes/Acts).
+
+- CHARACTER LIBRARY ("Characters" tab):
+  - A global workspace displaying all Character Cards.
+  - SORT ORDER: By order of first appearance in the story, top to bottom.
+  - Only STATIC traits are visible/editable here.
+  - Double-tap a character → detail view showing ONLY static traits +
+    Character Inspiration Board snapshot.
+  - DELETE from here is GLOBAL with confirmation prompt.
+
+- SCRIPTING LIBRARY ("Script" tab):
+  - A global chronological feed of every Action and Dialogue card created
+    across all scenes. Sorted by scene order, then position within dock.
+  - Read-only browsable view.
+  - DELETE from here is GLOBAL with confirmation prompt.
+
+- NAME SYNC: Changing a character's Name updates that character's identity
+  in all Dialogue and Scripting cards globally and instantly via SQL triggers.
+
+- DELETION SAFEGUARD: Deleting a card from a Global Library requires a
+  confirmation prompt: "Warning: This will permanently delete all instances
+  of this card. Proceed?"
+
+- SOFT DELETE: Deleting a Scene Card from the Main Board does NOT delete
+  the characters or script beats inside; they remain in their libraries.
+
+- LOCAL REMOVAL: Removing a card from a Scene Inspiration Board only removes
+  it from that scene. The card persists in its global library and other
+  scenes. No special deletion warning needed.
+
+
+3. THE "MATRYOSHKA" HIERARCHY FLOW
+_______________________________________________________________________________
+- LEVEL 0: LANDING PAGE
+  - Multi-project manager with single active workspace.
+  - List of saved projects from OPFS with last-modified date.
+  - "New Project" (Prompt for filename, select 3/5 Acts). No spaces in
+    filenames.
+  - "Load Project" — file picker to import external .sqlite.db into OPFS.
+  - Click existing project to open it.
+  - Export project option (download .sqlite.db).
+  - Delete project option with confirmation.
+
+- LEVEL 1: MAIN PROJECT BOARD (THE TIMELINE)
+  - Tab bar at top: Main Board | Characters | Script.
+  - Elements: Scene Cards, Act Lines, Act Labels.
+  - Zoom: Max In (1 Scene Card); Max Out (Full Act Structure).
+  - Navigation: Vertical or Horizontal toggle. No panning into negative space.
+
+- LEVEL 2: DETAIL VIEW (CENTERED MODAL - 85% VIEWPORT)
+  - Universal detail view pattern for all cards (see Section 4).
+  - Content: Read-only metadata + Snapshot Preview of the Inspiration Board
+    (if applicable). Snapshot shows board state at last save; blank themed
+    board if new.
+  - Interaction: Gear Icon (top-right) toggles "Edit Mode" (reveals Apply
+    button and Delete option).
+  - Circle-X (top-left) exits to parent.
+
+- LEVEL 3: SCENE INSPIRATION BOARD (FULL-SCREEN WORKSPACE)
+  - Content: Character, Event, Sticky Note, and Image cards.
+  - Zoom: Max In (Smallest Card/Note); Max Out (Fit all content).
+  - Cards can be freely positioned on the board (drag to place).
+  - Add card button: dropdown to select card type, then opens detail view
+    in edit mode for that card type.
+  - Drag-and-drop images directly onto board to create image cards.
+  - Board state captured as snapshot on save.
+
+- LEVEL 3.5: THE SCRIPTING DOCK (SLIDE-OUT SIDEBAR)
+  - Trigger: Tab on middle-left of screen. Tap to expand, tap to collapse.
+  - Expands to 50% width.
+  - Content: Chronological Action/Dialogue cards. Vertical scroll only.
+  - Add (+): Toggle to select "Action" or "Dialogue" (universal dropdown).
+    Floating right of dock.
+  - Interaction: Drag-and-drop vertical reordering (Reactive Gap logic).
+
+- LEVEL 4: SCRIPT ELEMENT DETAIL (CENTERED MODAL - 85% VIEWPORT)
+  - Same universal detail view pattern.
+  - Content: Metadata + Snapshot Preview of the Script Document.
+
+- LEVEL 5: SCRIPT EDITOR (FULL-SCREEN DOCUMENT VIEW)
+  - Content: 12pt Courier Prime distraction-free scripting environment.
+
+
+4. CARD ANATOMY & INFORMATION DISPLAY
+_______________________________________________________________________________
+UNIVERSAL DETAIL VIEW PATTERN (ALL CARDS):
+  - Double-tap card face → 85% viewport centered modal (read-only).
+  - Circle-X (top-left) to exit.
+  - Gear icon (top-right, symmetrical with Circle-X) to enter edit mode.
+  - Delete button available in edit mode (universal position).
+  - Apply button to save changes.
+  - If card has an inspiration board, snapshot preview is shown in detail
+    view. Double-tap snapshot to enter the inspiration board.
+
+4.1 SCENE CARD
+  - FACE: Title header (centered). Static 16:9 Image (User-defined or
+    theme-matching placeholder). Summary 1: Act Number | Location | Time
+    of Day. Summary 2: Comma-separated Cast List (e.g., "JACK, SARAH").
+    Has border.
+  - DETAIL VIEW: Title, act, location, time of day, hero image upload
+    (drag-drop / file picker). Snapshot of Scene Inspiration Board.
+  - INSPIRATION BOARD: Yes — Character, Event, Sticky Note, Image cards.
+
+4.2 CHARACTER CARD ("THE ID BADGE")
+  - FACE: Structured grid mimicking a Driver's License. Has border.
+    Universal Traits (Static): Name, Age, Sex, Origin, Role, Alignment, Goal.
+    Scene-Specific (Dynamic): Condition, Inventory, Scene Goal, Action, Mood,
+    Last Action, Last Mood. [VISIBLE ONLY WITHIN SCENE WORKSHOP].
+  - DETAIL VIEW (from Character Library): Static traits only + Inspiration
+    Board snapshot.
+  - DETAIL VIEW (from Scene Inspiration Board): Static AND dynamic traits +
+    Inspiration Board snapshot.
+  - Mood Selection: Standardized dropdown range of emotions.
+  - INSPIRATION BOARD: Yes — Image, Sticky Note cards.
+
+4.3 EVENT CARD
+  - FACE: Title above 16:9 user-chosen image. Has border.
+  - DETAIL VIEW: Title, Date, Time, Location, Description (multi-paragraph
+    text of what happened), Character dropdown selector (available characters
+    or "none"), Image (drag-drop / file picker). Snapshot of Event
+    Inspiration Board.
+  - INSPIRATION BOARD: Yes — Image, Sticky Note cards.
+
+4.4 DIALOGUE CARD
+  - FACE: Participating character list + Auto-scaled 16:9 portraits.
+    Has border.
+  - DETAIL VIEW: Participating characters (editable), metadata. Snapshot of
+    script document (double-tap to enter Script Editor Level 5).
+  - INSPIRATION BOARD: None — leads to Script Editor.
+
+4.5 ACTION CARD
+  - FACE: Secondary Theme Color + Scaled-to-fit script text. Has border.
+  - DETAIL VIEW: Action description (editable), metadata. Snapshot of script
+    document (double-tap to enter Script Editor Level 5).
+  - INSPIRATION BOARD: None — leads to Script Editor.
+
+4.6 IMAGE CARD
+  - FACE: Just the image, maximized, aspect-ratio preserved. NO border.
+  - DETAIL VIEW: Displays filename of uploaded image. Edit mode: swap image
+    (upload different file) or delete card.
+  - INSPIRATION BOARD: None (leaf node).
+
+4.7 STICKY NOTE CARD
+  - FACE: Looks like a real sticky note — yellow paper with text. Fit-to-
+    frame text scaling. NO border.
+  - DETAIL VIEW: Text display (read-only). Edit mode: edit text, add text,
+    change text color, change note color.
+  - INSPIRATION BOARD: None (leaf node).
+
+4.8 FIT-TO-FRAME
+  - Text on Action/Note cards scales to maximum legible size within frame.
+
+ENVIRONMENT MAP:
+  - Main Board (Level 1): Scene cards only.
+  - Scene Inspiration Board: Character, Event, Sticky Note, Image.
+  - Character Inspiration Board: Image, Sticky Note.
+  - Event Inspiration Board: Image, Sticky Note.
+  - Scripting Dock: Action, Dialogue.
+
+
+5. LEVEL 5 SCRIPT EDITOR FORMATTING (INDUSTRY STANDARDS)
+_______________________________________________________________________________
+- GLOBAL PAGE MARGINS: 1.25-inch Left, 1.25-inch Right.
+- ACTION BLOCKS: 1.25" Left, 1.25" Right.
+- CHARACTER NAMES: Uppercase; Centered at 3.7 inches from left.
+- PARENTHETICALS: Centered at 3.1 inches from left.
+- DIALOGUE BLOCKS: 3.5 inches wide; Centered on page.
+
+
+6. EXPORT & PRINTING ENGINE
+_______________________________________________________________________________
+- UI: Floating Circle Printer Icon (Top-Right of Scripting Library).
+- MODES: Rough Script, Only Dialogue, Only Actions, Print by Character.
+- FORMATS: PDF/Print Preview, .fadein, .fdx (Final Draft).
+- All generated client-side, no server needed.
+
+
+7. FUTURE: AUTH, CLOUD SYNC & MONETIZATION (PHASE 7+)
+_______________________________________________________________________________
+- Login/Accounts: Cloudflare Workers + D1 backend.
+- Cloud sync: Local OPFS <-> D1.
+- Tip jar: Stripe one-time payment.
+- One-time purchase: Stripe checkout.
+- Subscription: Stripe recurring billing.
+- Architecture must support clean addition of auth without rewrite.
+===============================================================================
