@@ -1,5 +1,5 @@
 /* src/noir-theme.css */
-:root {
+.theme-noir {
   /* Noir Theme - Default */
   --font-primary: 'Courier Prime', monospace;
 
@@ -26,6 +26,33 @@
   --font-size-xxl: 2rem;
 }
 
+.theme-light {
+  /* Light Theme - Placeholder */
+  --font-primary: 'Courier Prime', monospace;
+
+  /* Base Colors */
+  --color-background: #f5f5f5;
+  --color-text: #1a1a1a;
+  --color-accent: #d32f2f;
+  --color-surface: #ffffff;
+  --color-border: #cccccc;
+
+  /* UI Elements */
+  --button-background: var(--color-accent);
+  --button-text: #ffffff;
+  --button-hover-background: #b71c1c;
+
+  --link-color: var(--color-accent);
+  --link-hover-color: #f44336;
+
+  /* Font Sizes */
+  --font-size-small: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-large: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-xxl: 2rem;
+}
+
 body {
   font-family: var(--font-primary);
   background-color: var(--color-background);
@@ -36,4 +63,5 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }

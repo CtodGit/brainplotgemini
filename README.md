@@ -26,7 +26,7 @@ This file outlines the project tasks in a sequential, layer-by-layer progression
   - Define and implement the full SQLite database schema.
   - Set up SQL triggers for automated data synchronization (e.g., character names).
 
-- [ ] **Task #3: Universal Systems — Theming & Navigation**
+✅ [x] **Task #3: Universal Systems — Theming & Navigation**
   - Build the theme context/provider for dark/light mode switching.
   - Implement universal navigation controls: Circle-X (exit), Gear icon (edit), and the double-tap entry protocol.
 
@@ -36,10 +36,10 @@ This file outlines the project tasks in a sequential, layer-by-layer progression
 ## Phase 2: Page Scaffolding — The Matryoshka Layers (Tasks 4-10 & Audit)
 *Build the primary UI container for each level of the application hierarchy.*
 
-- [ ] **Task #4: Level 0 Page — The Landing Page (Project Manager)**
+✅ [x] **Task #4: Level 0 Page — The Landing Page (Project Manager)**
   - Create the main view for listing, creating, loading, exporting, and deleting projects from the OPFS database.
 
-- [ ] **Task #5: Level 1 Page — The Main Board & Global Libraries**
+✅ [x] **Task #5: Level 1 Page — The Main Board & Global Libraries**
   - Implement the primary tab bar: "Main Board" | "Characters" | "Script".
   - Scaffold the "Main Board" as a container for the future scene timeline.
   - Scaffold the "Characters" and "Script" tabs as containers for their respective global libraries.
