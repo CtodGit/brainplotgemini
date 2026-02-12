@@ -1,9 +1,9 @@
 # Our Workflow
-1.  **Read & Plan:** Review this file to identify the next task and form a plan.
+1.  **Read & Plan:** Review this file to identify the next task and form a plan. For tasks with sub-points, the main task is considered complete only when all its sub-points have been addressed.
 2.  **Discuss & Ask:** Explain the plan and ask for approval.
 3.  **Implement:** Upon approval, execute the task.
 4.  **Validate:** Run a build (`npm run build`) and/or tests to ensure changes work correctly.
-5.  **Update:** Mark the task complete in this file and `README.md`.
+5.  **Update:** Mark the task complete in this file and `README.md` using the format `✅ [x]`.
 6.  **Commit:** Stage and commit the changes locally with a clear message.
 7.  **Guide Push:** Provide instructions for publishing to GitHub as needed.
 
