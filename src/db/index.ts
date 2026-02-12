@@ -1,11 +1,11 @@
 // src/db/index.ts
 let worker: Worker | null = null;
 let nextId = 0;
-const promises = new Map<number, { resolve: (value: any) => void, reject: (reason?: any) => void }>();
+const promises = new Map<number, { resolve: (value: unknown) => void, reject: (reason?: unknown) => void }>();
 let isWorkerReady = false;
 let readyPromise: Promise<void> | null = null;
 
-function postMessage(action: string, params: any): Promise<any> {
+function postMessage(action: string, params: unknown): Promise<unknown> {
   return new Promise((resolve, reject) => {
     if (!worker) {
       reject(new Error("Database worker not initialized."));
@@ -25,7 +25,7 @@ export async function initDB(): Promise<void> {
   worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
 
   readyPromise = new Promise<void>((resolve, reject) => {
-    worker!.onmessage = (e) => {
+    worker!.onmessage = (e: MessageEvent) => {
       const { id, result, error } = e.data;
 
       if (id === 'worker-ready') {
@@ -66,7 +66,7 @@ export async function initDB(): Promise<void> {
   return readyPromise;
 }
 
-export async function exec(sql: string, params?: any[]): Promise<any> {
+export async function exec(sql: string, params?: unknown[]): Promise<unknown> {
   if (!isWorkerReady || !readyPromise) {
     throw new Error("Database not ready. Call initDB() and wait for it to complete.");
   }

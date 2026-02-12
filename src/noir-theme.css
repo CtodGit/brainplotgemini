@@ -1,0 +1,39 @@
+/* src/noir-theme.css */
+:root {
+  /* Noir Theme - Default */
+  --font-primary: 'Courier Prime', monospace;
+
+  /* Base Colors */
+  --color-background: #1a1a1a;
+  --color-text: #f0f0f0;
+  --color-accent: #e53935; /* A bold red for accents */
+  --color-surface: #2a2a2a; /* For cards, modals, etc. */
+  --color-border: #444444;
+
+  /* UI Elements */
+  --button-background: var(--color-accent);
+  --button-text: #ffffff;
+  --button-hover-background: #c62828;
+
+  --link-color: var(--color-accent);
+  --link-hover-color: #ff6e40;
+
+  /* Font Sizes */
+  --font-size-small: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-large: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-xxl: 2rem;
+}
+
+body {
+  font-family: var(--font-primary);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  margin: 0;
+  padding: 0;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
