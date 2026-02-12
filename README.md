@@ -21,7 +21,7 @@ This file outlines the project tasks in a sequential, layer-by-layer progression
   - Create `index.html` with HashRouter, Courier Prime fonts, and Noir CSS variables.
   - Implement basic PWA manifest and COOP/COEP headers.
 
-- [ ] **Task #2: Database & Storage — sql.js + OPFS**
+✅ [x] **Task #2: Database & Storage — sql.js + OPFS**
   - Integrate sql.js WASM and initialize the OPFS persistence layer.
   - Define and implement the full SQLite database schema.
   - Set up SQL triggers for automated data synchronization (e.g., character names).
