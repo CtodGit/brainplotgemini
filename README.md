@@ -2,7 +2,7 @@
 1.  **Read & Plan:** Review this file to identify the next task and form a plan. For tasks with sub-points, the main task is considered complete only when all its sub-points have been addressed.
 2.  **Discuss & Ask:** Explain the plan and ask for approval.
 3.  **Implement:** Upon approval, execute the task.
-4.  **Validate:** Run a build (`npm run build`) and/or tests to ensure changes work correctly.
+4.  **Validate:** Run a build (`npm run build`) and/or tests to ensure changes work correctly and **all errors are resolved**.
 5.  **Update:** Mark the task complete in this file and `README.md` using the format `✅ [x]`.
 6.  **Commit:** Stage and commit the changes locally with a clear message.
 7.  **Guide Push:** Provide instructions for publishing to GitHub as needed.
@@ -16,7 +16,7 @@ This file outlines the project tasks in a sequential, layer-by-layer progression
 ## Phase 1: Foundational Setup (Tasks 1-3 & Audit)
 *Core project scaffolding, database, and universal systems.*
 
-- [ ] **Task #1: Project Scaffolding — React + Vite PWA Boilerplate**
+✅ [x] **Task #1: Project Scaffolding — React + Vite PWA Boilerplate**
   - Set up `package.json`, Vite config, TypeScript, ESLint, and basic directory structure.
   - Create `index.html` with HashRouter, Courier Prime fonts, and Noir CSS variables.
   - Implement basic PWA manifest and COOP/COEP headers.
