@@ -16,7 +16,7 @@ This file outlines the project tasks in a sequential, layer-by-layer progression
 ## Phase 1: Foundational Setup (Tasks 1-3 & Audit)
 *Core project scaffolding, database, and universal systems.*
 
-- [x] **Task #1: Project Scaffolding — React + Vite PWA Boilerplate**
+- [ ] **Task #1: Project Scaffolding — React + Vite PWA Boilerplate**
   - Set up `package.json`, Vite config, TypeScript, ESLint, and basic directory structure.
   - Create `index.html` with HashRouter, Courier Prime fonts, and Noir CSS variables.
   - Implement basic PWA manifest and COOP/COEP headers.
