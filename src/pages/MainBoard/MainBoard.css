@@ -27,7 +27,7 @@
 
 .project-title {
   position: absolute;
-  top: 50%; /* Back to 50% centering */
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   margin: 0;
@@ -106,7 +106,7 @@
 .board-container {
   min-height: 100%;
   display: flex;
-  width: max-content; /* Allow growth */
+  width: max-content;
   min-width: 100%;
 }
 
@@ -125,7 +125,6 @@
 /* Vertical Layout */
 .layout-vertical .act-cell {
   position: relative;
-  /* (100vw - gaps) / n */
   width: calc(((100vw - (var(--act-count) + 1) * 0.75rem) / var(--act-count)) * var(--cell-ratio));
   min-width: calc((100vw - (var(--act-count) + 1) * 0.75rem) / var(--act-count));
   height: fit-content;
@@ -159,6 +158,11 @@
   opacity: 0.6;
 }
 
+.resize-handle:hover .handle-icon {
+  opacity: 1;
+  box-shadow: 0 0 15px var(--color-accent);
+}
+
 .layout-vertical .scene-card {
   width: 98%;
   height: 150px;
@@ -171,11 +175,13 @@
   width: 100%;
   height: max-content;
   align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
 }
 
 .layout-horizontal .act-cell {
   position: relative;
-  width: calc(100% - 1rem);
+  width: calc(100% - 1.5rem);
   min-height: calc((100vh - 115px - (3 + 1) * 0.75rem) / 3);
   height: calc(((100vh - 115px - (3 + 1) * 0.75rem) / 3) * var(--cell-ratio));
   border: 1px solid var(--color-border);
@@ -251,9 +257,156 @@
   justify-content: center;
 }
 
-.scene-card.placeholder {
+.scene-card-empty {
+  aspect-ratio: 16/9;
   border: 1px dashed var(--color-border);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0.5;
+}
+
+/* Scene Detail Modal Content */
+.scene-detail-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  height: 100%;
+}
+
+.detail-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detail-field label {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.detail-field span {
+  font-size: 1.2rem;
+  color: var(--color-text);
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.detail-field input, .detail-field select, .file-input-label {
+  height: 40px;
+  padding: 0 0.6rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-family: var(--font-primary);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.file-input-label {
+  cursor: pointer;
+  justify-content: center;
+  font-size: var(--font-size-base) !important;
+  opacity: 0.8;
+  transition: all 0.2s;
+}
+
+.file-input-label span {
+  font-size: inherit; /* Stop inheriting the larger detail-field span size */
+}
+
+.file-input-label:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  opacity: 1;
+}
+
+.inspiration-preview-placeholder {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 200px;
+}
+
+.preview-label {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  text-transform: uppercase;
+}
+
+.preview-snapshot {
+  flex: 1;
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+  opacity: 0.4;
+}
+
+.modal-actions-footer {
+  display: flex;
+  justify-content: space-between; /* Split buttons left and right */
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+  margin-top: auto;
+}
+
+.footer-left, .footer-right {
+  display: flex;
+  align-items: center;
+}
+
+.modal-btn {
+  width: 160px; /* Uniform width */
+  height: 45px; /* Uniform height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  font-family: var(--font-primary);
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.apply-btn {
+  background-color: var(--color-accent);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.edit-btn {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.delete-btn {
+  background-color: transparent;
+  color: #ff4444;
+  border: 1px solid #ff4444;
+}
+
+.delete-btn:hover {
+  background-color: #ff4444;
+  color: #fff;
 }
 
 /* Floating Add Card Button */
@@ -278,7 +431,7 @@
 
 .fab-add-card:hover {
   transform: scale(1.1);
-  background-color: var(--color-accent); /* Explicitly keep color */
+  background-color: var(--color-accent);
   box-shadow: 0 6px 20px var(--color-accent);
 }
 

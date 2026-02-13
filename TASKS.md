@@ -10,25 +10,38 @@
 - [x] **Task #2: SQLite Database Schema + sql.js Integration**
   sql.js WASM init, OPFS persistence layer, full schema (Projects, Acts, Scenes, Characters, Events, Actions, Dialogues, Sticky Notes, Images, Inspiration Boards), SQL triggers for name sync, D1-compatible schema.
 
-- [x] **Task #3: Theming System — CSS Variables + Custom Color Selection**
-  Dynamic custom theme context/provider for Primary/Secondary color selection. Automatic text contrast (Black/White). Reset to default functionality.
+- [x] **Task #3: Universal Systems — Theming & Navigation**
+  - Build the dynamic custom theme context/provider for Primary/Secondary color selection.
+  - Implement automatic text contrast (Black/White) based on background brightness.
+  - Implement universal navigation controls: Glowing Circle-X (exit) and minimalist 1px Gear icon (settings).
+  - Build the `useDoubleTap` entry protocol hook.
 
 - [x] **Task #4: Universal Navigation System — Entry/Exit Protocols**
-  Circle-X exit button (top-right), minimalist 1px Gear icon (settings), double-tap/double-click entry protocol hook, navigation consistency.
+  Final verification of Circle-X exit button, Gear icon settings, and double-tap interaction across the foundation.
 
 ## Phase 2: UI Layout — Matryoshka Hierarchy (Tasks 5-11)
 
 - [x] **Task #5: Level 0 — Landing Page (Project Manager)**
-  Centered glowing title. Standardized "Create", "Load", and "Import" buttons. Project list from OPFS, new project (filename + 3/5 act selection), load/import .brainplot (SQLite), export (download).
+  - Center "BrainPlot" title with secondary color glow effect.
+  - Standardized "Create", "Load", and "Import" buttons with uniform sizing and centering.
+  - Implement "Create Project" modal with "no spaces" name validation and 3/5 Act toggle.
+  - Implement "Load Project" modal with project list and selection highlighting.
+  - Add Export (download) and Import (upload) functionality for project files (.brainplot).
+  - Integrate global Theme Selector (color pickers) directly on the landing page.
 
 - [x] **Task #6: Level 1 — Main Board (Zoomable Scene Timeline)**
-  - Header: Large centered title, left-aligned folder tabs (50px), top-right Gear icon (centered vertically in header).
+  - Header: Large 6rem centered title, left-aligned folder tabs (50px), top-right Gear icon (centered vertically in header).
   - Acts: Individually resizable cells, min-size locked to default (1/n or 1/3), V-Width % <-> H-Height % translation.
   - Interaction: Smart FAB (adds to viewport-centered act), continuous auto-panning near edges, scene deletion safety prompts.
-  - Persistence: Real-time SQLite sync for all dimensions, structures, and scenes.
+  - Persistence: Full SQLite sync for all structural changes.
 
-- [ ] **Task #7: Level 2 — Detail View (Universal Modal)**
-  Universal 85% viewport centered modal pattern, read-only metadata, gear icon toggles edit mode, apply/delete buttons, inspiration board snapshot preview.
+- [ ] **Task #7: The Scene Card — Full Lifecycle Implementation**
+  - **1. Creation Flow**: Red FAB (+) opens the Universal Modal in "Create Mode" (pre-placement).
+  - **2. Detail View (Level 2)**: Universal 85% centered modal with Read-Only/Edit states. Metadata: Title, Location, Time, Cast List placeholder.
+  - **3. Card Face (Level 1)**: 16:9 layout, hero image area, and metadata indicators. Fit-to-cell scaling (96% width / 90% height).
+  - **4. Placement & Saving**: "Apply" action saves the scene to SQLite and renders it on the board.
+  - **5. Re-arrangement**: Drag-and-drop reordering within an act and movement between different acts (updating `act_id`).
+  - **6. Entry Protocol**: Double-tap/click card or snapshot to enter Level 3 Inspiration Board.
 
 - [ ] **Task #8: Level 3 — Scene Inspiration Board (Full-Screen Workspace)**
   Free-position canvas for Character/Event/Sticky Note/Image cards, zoom, drag-to-place, add card dropdown, drag-and-drop image upload, board state snapshot on save.
@@ -44,8 +57,8 @@
 
 ## Phase 3: Card System (Task 12)
 
-- [ ] **Task #12: Card Anatomy — All 7 Card Types**
-  Scene Card (title, 16:9 image, act/location/time, cast list), Character Card (ID badge grid, static + dynamic traits), Event Card (title, image, description), Dialogue Card (character list + portraits), Action Card (theme color + fit-to-frame text), Image Card (maximized image, no border), Sticky Note Card (yellow paper, fit-to-frame text).
+- [ ] **Task #12: Card Anatomy — Remaining Card Types**
+  Character Card (ID badge grid, static + dynamic traits), Event Card (title, image, description), Dialogue Card (character list + portraits), Action Card (theme color + fit-to-frame text), Image Card (maximized image, no border), Sticky Note Card (yellow paper, fit-to-frame text).
 
 ## Phase 4: Feature Richness (Tasks 13-17)
 

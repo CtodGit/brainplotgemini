@@ -30,33 +30,43 @@
   - Scaffold "Characters" and "Script" tabs.
 
 ✅ [x] **Task #6: Level 1 Page — The Main Board (Part B - Refined Timeline)**
-  - **Header Architecture**:
-    - Large 6rem centered title.
-    - Left-aligned "file-folder" style tabs (50px height).
-    - Gear icon pinned to top-right, vertically centered within the 135px header.
-  - **Act Cell Behavior**:
-    - Individual Act Resizing: Drag center-edge handles to grow cells.
-    - Vertical Mode: Width is resizable; Height is auto (fits scenes).
-    - Horizontal Mode: Height is resizable; Width is auto.
-    - Minimum Size: Locked to the "Default View" (1/n width or 1/3 height).
-    - Dimension Translation: Act Width % (Vertical) translates to Act Height % (Horizontal).
-  - **Smart Interaction**:
-    - Smart Add (FAB): The floating red plus button adds a scene to the act currently centered in the viewport.
-    - Auto-Panning: Dragging a resize handle near screen edges automatically scrolls the board.
-    - Safety Prompt: Warn user before deleting acts 4 & 5 if they contain scenes.
-  - **Persistence**: Real-time SQLite saves for all dimensions, act structures, and scenes.
+  - Header: Large 6rem centered title, left-aligned folder tabs, top-right Gear icon (centered).
+  - Acts: Individually resizable cells, min-size locked to default (1/n or 1/3), V-Width % <-> H-Height % translation.
+  - Interaction: Smart FAB (adds to viewport-centered act), continuous auto-panning near edges, safety prompts.
+  - Persistence: Full SQLite sync for all structural changes.
 
-- [ ] **Task #7: Level 2 Page — The Detail View (Universal Modal)**
-  - Develop the universal 85% viewport, centered modal component.
-  - **Scene Detail Content**:
-    - Read-only state with Gear-icon toggle for Edit mode.
-    - Fields: Title, Location, Time of Day, and Cast List.
-    - Placeholder for "Inspiration Board" snapshot preview.
-    - Implementation of the "Apply" and "Delete" actions.
-    - Entry Protocol: Double-tap/click the Scene Card or the Snapshot to enter Level 3.
+- [ ] **Task #7: The Scene Card — Full Lifecycle Implementation**
+  - **1. Creation Flow**: Red FAB (+) opens the Universal Modal in "Create Mode" (pre-placement).
+  - **2. Detail View (Level 2)**: Universal 85% centered modal with Read-Only/Edit states. Metadata: Title, Location, Time, Cast List placeholder.
+  - **3. Card Face (Level 1)**: 16:9 layout, hero image area, and metadata indicators. Fit-to-cell scaling.
+  - **4. Placement & Saving**: "Apply" action saves the scene to SQLite and renders it on the board.
+  - **5. Re-arrangement**: Drag-and-drop reordering within an act and movement between different acts.
+  - **6. Entry Protocol**: Double-tap/click card or snapshot to enter Level 3 Inspiration Board.
 
-- [ ] **Task #8: Level 3 Page — The Scene Inspiration Board**
-- [ ] **Task #9: Level 3.5 Page — The Scripting Dock (Sidebar)**
-- [ ] **Task #10: Level 5 Page — The Script Editor**
+- [ ] **Task #8: Level 3 — Scene Inspiration Board (Full-Screen Workspace)**
+  - Free-position canvas for Character/Event/Sticky Note/Image cards, zoom, drag-to-place, add card dropdown, drag-and-drop image upload, board state snapshot on save.
+
+- [ ] **Task #9: Level 3.5 — Scripting Dock (Sidebar)**
+  - Tab trigger on middle-left, expands to 50% width, chronological Action/Dialogue cards, vertical scroll, add toggle (Action/Dialogue), drag-and-drop reordering with reactive gap.
+
+- [ ] **Task #10: Level 4 — Script Element Detail (Action/Dialogue Modal)**
+  - Same universal detail view pattern, metadata + script document snapshot preview, double-tap snapshot to enter Script Editor.
+
+- [ ] **Task #11: Level 5 — Script Editor (Full-Screen Screenplay Editor)**
+  - 12pt Courier Prime distraction-free editor, industry-standard margins (1.25" L/R), character names uppercase centered at 3.7", parentheticals at 3.1", dialogue blocks 3.5" wide centered.
 
 - [ ] **Audit 2: Page Scaffolding Review**
+
+## Phase 3: Card System Implementation (Tasks 12-17)
+- [ ] **Task #12: Card Anatomy — Remaining Types**
+  - Character Card (ID badge grid), Event Card, Dialogue Card, Action Card, Image Card, Sticky Note Card.
+- [ ] **Task #13: Global Libraries — Character Library + Scripting Library**
+  - Characters tab (sorted by first appearance, static traits only, global delete), Script tab (chronological feed of all Actions/Dialogues, read-only, global delete).
+- [ ] **Task #14: Name Sync & Deletion Safeguards**
+  - SQL triggers for character name propagation, confirmation prompts for global deletes.
+- [ ] **Task #15: Auto-Save System**
+  - Circle-X triggers auto-commit to SQLite, debounced saves during editing.
+- [ ] **Task #16: Export & Print Engine**
+  - PDF, .fadein, and .fdx formats. Modes: Rough Script, Only Dialogue, Only Actions.
+- [ ] **Task #17: PWA Finalization**
+  - Final icons, service worker tuning, Lighthouse audit pass.
