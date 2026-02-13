@@ -40,6 +40,15 @@ self.onmessage = async (e: MessageEvent) => {
 
       if (db) { // Ensure db is not null before using exec
         db.exec(SCHEMA_SQL); // Apply schema after DB is initialized
+        
+        // Migration: Add columns if they don't exist
+        try {
+          db.exec("ALTER TABLE Projects ADD COLUMN cell_dimension_ratio REAL DEFAULT 0;");
+        } catch(e) {/* already exists */}
+        try {
+          db.exec("ALTER TABLE Acts ADD COLUMN cell_dimension_ratio REAL DEFAULT 0;");
+        } catch(e) {/* already exists */}
+        
         console.log('OPFS Database initialized and schema applied.');
       }
 

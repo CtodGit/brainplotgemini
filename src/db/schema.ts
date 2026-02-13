@@ -9,6 +9,7 @@ export const SCHEMA_SQL = `
     layout_direction TEXT DEFAULT 'vertical',
     primary_color TEXT DEFAULT '#000000',
     secondary_color TEXT DEFAULT '#ff0000',
+    cell_dimension_ratio REAL DEFAULT 0, -- 0 means use 1/n default
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
@@ -19,6 +20,7 @@ export const SCHEMA_SQL = `
     project_id TEXT NOT NULL,
     act_number INTEGER NOT NULL,
     name TEXT,
+    cell_dimension_ratio REAL DEFAULT 0, -- Individual act scaling
     FOREIGN KEY (project_id) REFERENCES Projects(id) ON DELETE CASCADE
   );
 

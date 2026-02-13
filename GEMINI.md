@@ -11,131 +11,52 @@
 
 # BrainPlot — Layered Development Roadmap
 
-This file outlines the project tasks in a sequential, layer-by-layer progression. We will build the foundational UI structure first, then implement the specific card types, and finally integrate global features.
-
 ## Phase 1: Foundational Setup (Tasks 1-3 & Audit)
-*Core project scaffolding, database, and universal systems.*
-
 ✅ [x] **Task #1: Project Scaffolding — React + Vite PWA Boilerplate**
-  - Set up `package.json`, Vite config, TypeScript, ESLint, and basic directory structure.
-  - Create `index.html` with HashRouter, Courier Prime fonts, and Noir CSS variables.
-  - Implement basic PWA manifest and COOP/COEP headers.
-
 ✅ [x] **Task #2: Database & Storage — sql.js + OPFS**
-  - Integrate sql.js WASM and initialize the OPFS persistence layer.
-  - Define and implement the full SQLite database schema.
-  - Set up SQL triggers for automated data synchronization (e.g., character names).
-
 ✅ [x] **Task #3: Universal Systems — Theming & Navigation**
-  - Build the dynamic custom theme context/provider for Primary/Secondary color selection.
-  - Implement automatic text contrast (Black/White) based on background brightness.
-  - Implement universal navigation controls: Glowing Circle-X (exit) and minimalist 1px Gear icon (settings).
-  - Build the `useDoubleTap` entry protocol for card interactions.
-
 ✅ [x] **Audit 1: Foundational Setup Review**
-  - Verify project scaffolding, custom theming, and universal navigation elements.
 
 ## Phase 2: Page Scaffolding — The Matryoshka Layers (Tasks 4-10 & Audit)
-*Build the primary UI container for each level of the application hierarchy.*
 
 ✅ [x] **Task #4: Level 0 Page — The Landing Page (Project Manager)**
   - Center "BrainPlot" title with secondary color glow effect.
-  - Standardize "Create", "Load", and "Import" buttons with uniform sizing and centering.
+  - Standardized "Create", "Load", and "Import" buttons with uniform sizing and centering.
   - Implement "Create Project" modal with "no spaces" name validation and 3/5 Act toggle.
-  - Implement "Load Project" modal with project list and selection highlighting.
-  - Add Export (download) and Import (upload) functionality for project files (.brainplot).
-  - Integrate global Theme Selector (color pickers) directly on the landing page.
+  - Add Export and Import functionality for project files (.brainplot).
 
-✅ [x] **Task #5: Level 1 Page — The Main Board & Global Libraries**
-  - Implement the primary tab bar: "Main Board" | "Characters" | "Script".
-  - Scaffold the "Main Board" as a container for the scene timeline.
-  - Integrate a Gear icon in the tab bar for board-specific settings.
+✅ [x] **Task #5: Level 1 Page — The Main Board (Part A - Scaffold)**
+  - Implement the primary tab bar with contextual visibility (hides active tab).
+  - Scaffold "Characters" and "Script" tabs.
 
-✅ [x] **Task #5.5: Level 1.5 Page — The Settings Menu (Dropdown & Theme Selector)**
-  - Implement a dropdown for the Gear icon with:
-    - Act Toggle: Switch between 3 and 5 acts (dynamically display the alternative).
-    - Layout Toggle: Vertical (Desktop default) vs. Horizontal (Mobile default) rows.
-    - "Theme Colors" option to open the custom color picker window.
-  - Implement the custom Color Picker window:
-    - Primary and Secondary color selection with Hex input.
-    - Opaque, theme-aware surface colors for all modals.
-    - "Reset to Default" button for quick theme recovery.
-  - Integrate Circle-X on all menus to save state and return to the previous level.
+✅ [x] **Task #6: Level 1 Page — The Main Board (Part B - Refined Timeline)**
+  - **Header Architecture**:
+    - Large 6rem centered title.
+    - Left-aligned "file-folder" style tabs (50px height).
+    - Gear icon pinned to top-right, vertically centered within the 135px header.
+  - **Act Cell Behavior**:
+    - Individual Act Resizing: Drag center-edge handles to grow cells.
+    - Vertical Mode: Width is resizable; Height is auto (fits scenes).
+    - Horizontal Mode: Height is resizable; Width is auto.
+    - Minimum Size: Locked to the "Default View" (1/n width or 1/3 height).
+    - Dimension Translation: Act Width % (Vertical) translates to Act Height % (Horizontal).
+  - **Smart Interaction**:
+    - Smart Add (FAB): The floating red plus button adds a scene to the act currently centered in the viewport.
+    - Auto-Panning: Dragging a resize handle near screen edges automatically scrolls the board.
+    - Safety Prompt: Warn user before deleting acts 4 & 5 if they contain scenes.
+  - **Persistence**: Real-time SQLite saves for all dimensions, act structures, and scenes.
 
-- [ ] **Task #6: Level 2 Page — The Detail View (Universal Modal)**
-  - Develop the universal 85% viewport, centered modal for detail views.
-  - Implement the read-only state, gear-icon toggle for edit mode, and placeholder spots for metadata and a snapshot preview.
+- [ ] **Task #7: Level 2 Page — The Detail View (Universal Modal)**
+  - Develop the universal 85% viewport, centered modal component.
+  - **Scene Detail Content**:
+    - Read-only state with Gear-icon toggle for Edit mode.
+    - Fields: Title, Location, Time of Day, and Cast List.
+    - Placeholder for "Inspiration Board" snapshot preview.
+    - Implementation of the "Apply" and "Delete" actions.
+    - Entry Protocol: Double-tap/click the Scene Card or the Snapshot to enter Level 3.
 
-- [ ] **Task #7: Level 3 Page — The Scene Inspiration Board**
-  - Create the full-screen workspace canvas for free-positioning cards.
-  - Implement basic zoom and placeholder for the "add card" dropdown.
-
-- [ ] **Task #8: Level 3.5 Page — The Scripting Dock (Sidebar)**
-  - Implement the slide-out sidebar container, triggered by a tab on the middle-left of the screen.
-  - Scaffold the container for future chronological Action/Dialogue cards.
-
-- [ ] **Task #9: Level 4 Page — The Script Element Detail**
-  - Re-use the universal modal pattern (Task #6) to serve as the detail view for script elements.
-
+- [ ] **Task #8: Level 3 Page — The Scene Inspiration Board**
+- [ ] **Task #9: Level 3.5 Page — The Scripting Dock (Sidebar)**
 - [ ] **Task #10: Level 5 Page — The Script Editor**
-  - Create the full-screen, distraction-free text editor environment.
-  - Apply the specified Courier Prime font and industry-standard margins.
 
 - [ ] **Audit 2: Page Scaffolding Review**
-  - Run `npm run preview` to verify that all layered pages and their primary UI containers are correctly structured, navigable, and adhere to the visual specifications.
-
-## Phase 3: Card System Implementation (Tasks 11-17 & Audit)
-*Develop the specific anatomy and functionality for each card type.*
-
-- [ ] **Task #11: Scene Card**
-  - Implement the card's face (title, image, metadata) and its detail view content.
-
-- [ ] **Task #12: Character Card**
-  - Implement the "ID Badge" face (static/dynamic traits) and its detail view content.
-
-- [ ] **Task #13: Event Card**
-  - Implement the card's face (title, image) and its detail view content.
-
-- [ ] **Task #14: Dialogue Card**
-  - Implement the card's face (character portraits) and its detail view, linking to the Script Editor.
-
-- [ ] **Task #15: Action Card**
-  - Implement the card's face (themed color, script text) and its detail view, linking to the Script Editor.
-
-- [ ] **Task #16: Image Card**
-  - Implement the borderless image card face and its simple detail view.
-
-- [ ] **Task #17: Sticky Note Card**
-  - Implement the sticky note appearance and its text-editing detail view.
-
-- [ ] **Audit 3: Card System Review**
-  - Run `npm run preview` to verify that all card types are correctly implemented, display accurately on their respective pages, and their detail views function as expected.
-
-## Phase 4: Feature Integration & Finalization (Tasks 18-21 & Audit)
-*Connect the systems and add remaining high-level features.*
-
-- [ ] **Task #18: Name Sync & Deletion Safeguards**
-  - Implement and test the SQL triggers for character name propagation.
-  - Add confirmation prompts for all global delete actions.
-
-- [ ] **Task #19: Auto-Save System**
-  - Connect the auto-save logic to the Circle-X button and card creation events.
-
-- [ ] **Task #20: Export & Print Engine**
-  - Add the floating printer icon to the Scripting Library.
-  - Build the client-side export functionality for PDF, .fadein, and .fdx formats.
-
-- [ ] **Task #21: PWA Finalization**
-  - Add final PWA icons, tune the service worker, and run a Lighthouse audit.
-
-- [ ] **Audit 4: Feature Integration & PWA Review**
-  - Run `npm run preview` to perform a comprehensive review of all integrated features, ensuring data integrity, export functionality, and PWA readiness.
-
-## Phase 5: Polish & Future (Tasks 22-23)
-*Post-MVP enhancements.*
-
-- [ ] **Task #22: Additional Theme Palettes**
-  - Design and implement the 11 remaining genre-specific color themes.
-
-- [ ] **Task #23: Auth, Cloud Sync & Monetization (Phase 7+)**
-  - Plan for future implementation of Cloudflare Workers, D1 sync, and Stripe.

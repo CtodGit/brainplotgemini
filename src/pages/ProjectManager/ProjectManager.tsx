@@ -4,6 +4,7 @@ import { exec, initDB, exportDB } from '../../db';
 import { CircleX } from '../../components/Navigation/CircleX';
 import { GearIcon } from '../../components/Navigation/GearIcon';
 import { ThemeSelector } from '../../components/Settings/ThemeSelector';
+import { useTheme } from '../../contexts/ThemeContext';
 import './ProjectManager.css';
 
 interface Project {
@@ -15,6 +16,7 @@ interface Project {
 }
 
 export const ProjectManager: React.FC = () => {
+  const { primaryColor, secondaryColor } = useTheme();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +62,10 @@ export const ProjectManager: React.FC = () => {
 
     const id = crypto.randomUUID();
     try {
-      await exec('INSERT INTO Projects (id, name, act_structure) VALUES (?, ?, ?)', [id, newName, newActs]);
+      await exec(
+        'INSERT INTO Projects (id, name, act_structure, primary_color, secondary_color) VALUES (?, ?, ?, ?, ?)', 
+        [id, newName, newActs, primaryColor, secondaryColor]
+      );
       navigate(`/project/${id}`);
     } catch (error) {
       console.error('Failed to create project:', error);

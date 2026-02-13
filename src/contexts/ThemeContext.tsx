@@ -32,6 +32,10 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     root.style.setProperty('--color-surface', surfaceColor);
     root.style.setProperty('--color-border', isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)');
 
+    // Button hover color
+    const hoverColor = adjustColor(secondaryColor, isDark ? 20 : -20);
+    root.style.setProperty('--button-hover-background', hoverColor);
+
     localStorage.setItem('theme-primary', primaryColor);
     localStorage.setItem('theme-secondary', secondaryColor);
   }, [primaryColor, secondaryColor]);

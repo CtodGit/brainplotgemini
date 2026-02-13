@@ -21,10 +21,13 @@
 - [x] **Task #5: Level 0 — Landing Page (Project Manager)**
   Centered glowing title. Standardized "Create", "Load", and "Import" buttons. Project list from OPFS, new project (filename + 3/5 act selection), load/import .brainplot (SQLite), export (download).
 
-- [ ] **Task #6: Level 1 — Main Board (Zoomable Scene Timeline)**
-  Tab bar (Main Board | Characters | Script), scene cards on timeline, act lines/labels, zoom in/out, vertical/horizontal toggle, no negative-space panning.
+- [x] **Task #6: Level 1 — Main Board (Zoomable Scene Timeline)**
+  - Header: Large centered title, left-aligned folder tabs (50px), top-right Gear icon (centered vertically in header).
+  - Acts: Individually resizable cells, min-size locked to default (1/n or 1/3), V-Width % <-> H-Height % translation.
+  - Interaction: Smart FAB (adds to viewport-centered act), continuous auto-panning near edges, scene deletion safety prompts.
+  - Persistence: Real-time SQLite sync for all dimensions, structures, and scenes.
 
-- [ ] **Task #7: Level 2 — Detail View (Scene Metadata Modal)**
+- [ ] **Task #7: Level 2 — Detail View (Universal Modal)**
   Universal 85% viewport centered modal pattern, read-only metadata, gear icon toggles edit mode, apply/delete buttons, inspiration board snapshot preview.
 
 - [ ] **Task #8: Level 3 — Scene Inspiration Board (Full-Screen Workspace)**

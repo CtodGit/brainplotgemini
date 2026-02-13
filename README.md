@@ -63,9 +63,19 @@ This file outlines the project tasks in a sequential, layer-by-layer progression
     - Instant UI update and project save upon theme selection.
   - Integrate Circle-X on the menu to save state and return to the Level 1 board.
 
-- [ ] **Task #6: Level 2 Page — The Detail View (Universal Modal)**
-  - Develop the universal 85% viewport, centered modal for detail views.
-  - Implement the read-only state, gear-icon toggle for edit mode, and placeholder spots for metadata and a snapshot preview.
+- [ ] **Task #6: Level 1 Page — The Main Board (Zoomable Scene Timeline)**
+  - Refine Header:
+    - Centered Project Title at the top.
+    - Centered contextual Tab Bar (hides active tab) with uniform button sizes.
+    - Gear icon to the right of tabs; remove Circle-X and Plus buttons.
+  - Implement Act Cells with mode-specific scaling (n = 3 or 5):
+    - Vertical Mode (Desktop Default): Act Cell width 1/n, horizontally resizable.
+    - Horizontal Mode: Act Cell height 1/n, vertically resizable.
+  - Scene Card Proportional Scaling:
+    - Vertical Mode: Width 100% of Act Cell, height 1/n of viewable board height.
+    - Horizontal Mode: Height 100% of Act Cell, width 1/n of viewable board width.
+    - 1-column grid (Vertical) or 1-row grid (Horizontal) where new cards add rows/columns.
+  - Zoom Display: Implement browser-native zoom detection with a temporary toast indicator.
 
 - [ ] **Task #7: Level 3 Page — The Scene Inspiration Board**
   - Create the full-screen workspace canvas for free-positioning cards.
