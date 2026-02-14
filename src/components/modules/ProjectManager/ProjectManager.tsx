@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { exec, initDB, exportDB } from '../../db';
-import { CircleX } from '../../components/Navigation/CircleX';
-import { GearIcon } from '../../components/Navigation/GearIcon';
-import { ThemeSelector } from '../../components/Settings/ThemeSelector';
-import { useTheme } from '../../contexts/ThemeContext';
+import { exec, initDB, exportDB } from '../../../db';
+import { CircleX } from '../../Navigation/CircleX';
+import { GearIcon } from '../../Navigation/GearIcon';
+import { ThemeSelector } from '../../Settings/ThemeSelector';
+import { useTheme } from '../../../contexts/ThemeContext';
 import './ProjectManager.css';
 
 interface Project {

@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { GearIcon } from '../../components/Navigation/GearIcon';
-import { SettingsDropdown } from '../../components/Settings/SettingsDropdown';
 import { ThemeSelector } from '../../components/Settings/ThemeSelector';
 import { exec, initDB } from '../../db';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Modal } from '../../components/UI/Modal';
-import { SceneCard } from '../../components/Cards/SceneCard';
+import { Header } from '../../components/modules/header/Header';
+import { DraggableBoard } from '../../components/modules/board/DraggableBoard';
+import { SceneDetailModal } from '../../components/modules/modals/SceneDetailModal';
+import { SettingsDropdown } from '../../components/Settings/SettingsDropdown';
 import './MainBoard.css';
 
 type Tab = 'board' | 'characters' | 'script';
 
-interface ProjectSettings {
+export interface ProjectSettings {
   name: string;
   act_structure: number;
   layout_direction: 'vertical' | 'horizontal';
@@ -19,14 +20,14 @@ interface ProjectSettings {
   secondary_color: string;
 }
 
-interface Act {
+export interface Act {
   id: string;
   act_number: number;
   name: string;
   cell_dimension_ratio: number;
 }
 
-interface Scene {
+export interface Scene {
   id: string;
   act_id: string;
   title: string;
@@ -44,6 +45,7 @@ export const MainBoard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('board');
   const [showSettings, setShowSettings] = useState(false);
   const [showThemeSelector, setShowThemeSelector] = useState(false);
+  const [showInspirationBoard, setShowInspirationBoard] = useState(false);
   
   // Scene Modal State
   const [showSceneModal, setShowSceneModal] = useState(false);
@@ -66,6 +68,11 @@ export const MainBoard: React.FC = () => {
   useEffect(() => {
     loadProjectData();
   }, [projectId]);
+
+  // Debugging log for showSettings
+  useEffect(() => {
+    console.log('showSettings state changed to:', showSettings);
+  }, [showSettings]);
 
   const loadProjectData = async () => {
     try {
@@ -110,6 +117,22 @@ export const MainBoard: React.FC = () => {
     } catch (error) {
       console.error('Failed to save settings:', error);
     }
+  };
+
+  const handleScenesChange = (newScenes: Scene[]) => {
+    setScenes(newScenes);
+    // Persist changes
+    (async () => {
+      const updates = newScenes.map((scene, i) =>
+        exec('UPDATE Scenes SET act_id = ?, scene_number = ? WHERE id = ?', [scene.act_id, i + 1, scene.id])
+      );
+      try {
+        await Promise.all(updates);
+      } catch (error) {
+        console.error('Failed to save scene order:', error);
+        // loadProjectData(); // Revert on error
+      }
+    })();
   };
 
   const handleSaveExit = async () => {
@@ -240,6 +263,10 @@ export const MainBoard: React.FC = () => {
     await handleSaveSettings({ primary_color: primaryColor, secondary_color: secondaryColor });
   };
 
+  const handleEnterInspirationBoard = () => {
+    setShowInspirationBoard(true);
+  };
+
   const handleResizeStart = (e: React.MouseEvent, actId: string) => {
     e.preventDefault();
     const startX = e.clientX;
@@ -302,93 +329,65 @@ export const MainBoard: React.FC = () => {
 
   return (
     <div className="main-board">
-      <header className="main-board-header">
-        <h1 className="project-title">{settings.name}</h1>
-        <div className="settings-wrapper">
-          <GearIcon className="tab-gear" onClick={() => setShowSettings(!showSettings)} />
-          {showSettings && (
-            <SettingsDropdown 
-              actStructure={settings.act_structure} layoutDirection={settings.layout_direction}
-              onToggleActs={toggleActs} onToggleLayout={toggleLayout} onOpenThemes={() => { setShowThemeSelector(true); setShowSettings(false); }}
-              onResetDefault={resetToDefault} onSaveExit={handleSaveExit}
-            />
-          )}
-        </div>
-        <div className="toolbar-row">
-          <div className="toolbar-spacer"></div>
-          <div className="tab-bar">
-            {activeTab !== 'board' && <button className="tab-btn" onClick={() => setActiveTab('board')}>Main Board</button>}
-            {activeTab !== 'characters' && <button className="tab-btn" onClick={() => setActiveTab('characters')}>Characters</button>}
-            {activeTab !== 'script' && <button className="tab-btn" onClick={() => setActiveTab('script')}>Script</button>}
-          </div>
-        </div>
-      </header>
+      <Header
+        settings={settings}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onSettingsToggle={() => {
+          console.log('Gear icon clicked! Toggling showSettings to:', !showSettings);
+          setShowSettings(!showSettings);
+        }}
+      />
       
       <main className="main-board-content" ref={contentRef}>
         {activeTab === 'board' && (
-          <div className={`board-container layout-${settings.layout_direction}`} style={{ '--act-count': settings.act_structure } as React.CSSProperties}>
-            <div className="acts-grid">
-              {acts.map((act) => (
-                <div key={act.id} className="act-cell" style={{ '--cell-ratio': act.cell_dimension_ratio } as React.CSSProperties}>
-                  <header className="act-header"><h3>Act {act.act_number}</h3></header>
-                  <div className="scene-list">
-                    {scenes.filter(s => s.act_id === act.id).map(s => <SceneCard key={s.id} scene={s} onOpenDetail={() => handleSceneOpen(s)} />)}
-                    {scenes.filter(s => s.act_id === act.id).length === 0 && <div className="scene-card-empty placeholder"><span>Empty Act</span></div>}
-                  </div>
-                  <div className="resize-handle" onMouseDown={(e) => handleResizeStart(e, act.id)}><div className="handle-icon"></div></div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <DraggableBoard
+            settings={settings}
+            acts={acts}
+            scenes={scenes}
+            onScenesChange={handleScenesChange}
+            onSceneOpen={handleSceneOpen}
+            onResizeStart={handleResizeStart}
+          />
         )}
       </main>
 
-      {showThemeSelector && <ThemeSelector onClose={handleThemeClose} />}
+      {showSettings && (
+        <SettingsDropdown 
+          actStructure={settings.act_structure} layoutDirection={settings.layout_direction}
+          onToggleActs={toggleActs} onToggleLayout={toggleLayout} onOpenThemes={() => { setShowThemeSelector(true); setShowSettings(false); }}
+          onResetDefault={resetToDefault} onSaveExit={handleSaveExit}
+        />
+      )}
+      {showThemeSelector && (
+        <ThemeSelector onClose={handleThemeClose} />
+      )}
 
-      <Modal 
-        isOpen={showSceneModal} 
-        onClose={() => setShowSceneModal(false)} 
-        title={isEditing ? 'Edit Scene' : currentScene?.title || 'Scene Detail'}
-      >
-        {currentScene && (
-          <div className="scene-detail-modal-content">
-            <div className="detail-meta-grid">
-              <div className="detail-field"><label>Title</label>{isEditing ? <input type="text" value={currentScene.title} onChange={e => setCurrentScene({ ...currentScene, title: e.target.value })} /> : <span>{currentScene.title}</span>}</div>
-              <div className="detail-field"><label>Location</label>{isEditing ? <input type="text" placeholder="e.g. INT. KITCHEN" value={currentScene.location || ''} onChange={e => setCurrentScene({ ...currentScene, location: e.target.value })} /> : <span>{currentScene.location || 'NONE'}</span>}</div>
-              <div className="detail-field"><label>Time of Day</label>{isEditing ? <select value={currentScene.time_of_day || 'DAY'} onChange={e => setCurrentScene({ ...currentScene, time_of_day: e.target.value })}><option value="DAY">DAY</option><option value="NIGHT">NIGHT</option><option value="DUSK">DUSK</option><option value="DAWN">DAWN</option></select> : <span>{currentScene.time_of_day || 'DAY'}</span>}</div>
-              {isEditing && (
-                <div className="detail-field">
-                  <label>Scene Image</label>
-                  <label className="file-input-label">
-                    <span>{currentScene.hero_image_url ? 'Change Image' : 'Click to choose file'}</span>
-                    <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
-                  </label>
-                </div>
-              )}
-            </div>
-            <div className="inspiration-preview-placeholder">
-              <div className="preview-label">Inspiration Board Snapshot</div>
-              <div className="preview-snapshot">
-                <span>Double-tap to enter Inspiration Board</span>
-              </div>
-            </div>
-            <div className="modal-actions-footer">
-              <div className="footer-left">
-                {isEditing ? (
-                  <button className="apply-btn modal-btn" onClick={handleApplyScene}>Apply</button>
-                ) : (
-                  <button className="edit-btn modal-btn" onClick={() => setIsEditing(true)}>Edit</button>
-                )}
-              </div>
-              <div className="footer-right">
-                {!isEditing && (
-                  <button className="delete-btn modal-btn" onClick={handleDeleteScene}>Delete Scene</button>
-                )}
-              </div>
-            </div>
+      <SceneDetailModal
+        isOpen={showSceneModal}
+        onClose={() => setShowSceneModal(false)}
+        scene={currentScene}
+        isEditing={isEditing}
+        onSetIsEditing={setIsEditing}
+        onUpdateScene={setCurrentScene}
+        onApplyScene={handleApplyScene}
+        onDeleteScene={handleDeleteScene}
+        onImageUpload={handleImageUpload}
+        onEnterInspirationBoard={handleEnterInspirationBoard}
+      />
+
+      {showInspirationBoard && (
+        <Modal
+          isOpen={showInspirationBoard}
+          onClose={() => setShowInspirationBoard(false)}
+          title="Inspiration Board"
+        >
+          <div>
+            <h2>Level 3 Inspiration Board (Placeholder)</h2>
+            <p>This is where the free-form canvas for cards will go.</p>
           </div>
-        )}
-      </Modal>
+        </Modal>
+      )}
 
       <button className="fab-add-card" onClick={handleAddSceneClick} title="Add Scene">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>

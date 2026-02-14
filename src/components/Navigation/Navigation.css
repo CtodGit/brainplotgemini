@@ -1,6 +1,4 @@
 .nav-control {
-  position: fixed;
-  z-index: 1000;
   cursor: pointer;
   background: none;
   border: none;

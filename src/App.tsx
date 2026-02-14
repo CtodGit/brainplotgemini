@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { ProjectManager } from './pages/ProjectManager/ProjectManager';
+import { ProjectManager } from './components/modules/ProjectManager/ProjectManager';
 import { MainBoard } from './pages/MainBoard/MainBoard';
 import './App.css';
 

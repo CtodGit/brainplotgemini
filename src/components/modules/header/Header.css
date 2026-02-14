@@ -1,0 +1,89 @@
+/* Header - Condensed and Fixed */
+.main-board-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 115px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.1875rem 0 0 0;
+  background-color: var(--color-background);
+  border-bottom: 1px solid var(--color-border);
+  gap: 0.1875rem;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.project-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  font-size: 5rem;
+  color: var(--color-accent);
+  text-shadow: 0 0 15px var(--color-accent);
+  text-align: center;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.settings-wrapper {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  z-index: 1100;
+}
+
+.tab-gear {
+  /* No specific styles needed here if it's just the icon */
+}
+
+.toolbar-row {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start; /* This ensures tabs are on the left */
+  align-items: flex-end;
+  padding: 0 0.375rem;
+  box-sizing: border-box;
+}
+
+.tab-bar {
+  display: flex;
+  gap: 0.09rem;
+  justify-content: flex-start;
+}
+
+.tab-btn {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-bottom: none;
+  padding: 0.3rem 1.2rem;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-small);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s;
+  width: auto;
+  min-width: 110px;
+  height: 36px;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  top: 1px;
+}
+
+.tab-btn:hover, .tab-btn.active {
+  background-color: var(--color-accent);
+  color: #fff;
+  border-color: var(--color-accent);
+}
