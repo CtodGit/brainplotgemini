@@ -37,6 +37,11 @@
   border: 1px dashed var(--color-accent);
 }
 
+.act-cell.droppable-over {
+  border: 2px dashed var(--color-primary);
+  background-color: rgba(var(--color-primary-rgb), 0.05);
+}
+
 .layout-vertical .resize-handle {
   position: absolute;
   right: -0.375rem;

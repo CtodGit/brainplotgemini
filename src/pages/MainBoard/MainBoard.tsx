@@ -120,6 +120,7 @@ export const MainBoard: React.FC = () => {
   };
 
   const handleScenesChange = (newScenes: Scene[]) => {
+    console.log('MainBoard received new scenes:', newScenes);
     setScenes(newScenes);
     // Persist changes
     (async () => {

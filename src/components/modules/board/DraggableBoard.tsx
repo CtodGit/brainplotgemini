@@ -4,13 +4,17 @@
  * It encapsulates all the logic related to `dnd-kit` for dragging, dropping, and reordering scenes.
  */
 
-import React, { useState, useEffect } from 'react';
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import React, { useState, useEffect, useMemo } from 'react';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core'; // Added DragOverlay import
 import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
-import { arrayMove, SortableContext, verticalListSortingStrategy, horizontalListSortingStrategy } from '@dnd-kit/sortable';
-import { SceneCard } from '../../../components/Cards/SceneCard';
+import { arrayMove } from '@dnd-kit/sortable';
+import { SceneCard } from '../../../components/Cards/SceneCard'; // Import SceneCard for DragOverlay
 import type { ProjectSettings, Act, Scene } from '../../../pages/MainBoard/MainBoard';
+import { ActCell } from './ActCell';
 import './DraggableBoard.css';
+
+// Type for organizing scenes by act ID for easier DND logic
+type ScenesByAct = { [key: string]: Scene[] };
 
 // Define the types for the props that the DraggableBoard component will accept.
 interface DraggableBoardProps {
@@ -39,6 +43,15 @@ export const DraggableBoard: React.FC<DraggableBoardProps> = ({
   const [activeId, setActiveId] = useState<string | null>(null);
   const [overActId, setOverActId] = useState<string | null>(null);
 
+  // Memoize scenes organized by act for efficient access during DND operations
+  const scenesByAct: ScenesByAct = useMemo(() => {
+    const newScenesByAct: ScenesByAct = {};
+    acts.forEach(act => {
+      newScenesByAct[act.id] = scenes.filter(scene => scene.act_id === act.id);
+    });
+    return newScenesByAct;
+  }, [acts, scenes]);
+
   useEffect(() => {
     // This is to satisfy the linter, as activeId is used implicitly by dnd-kit
     if (activeId) {
@@ -58,13 +71,17 @@ export const DraggableBoard: React.FC<DraggableBoardProps> = ({
     if (acts.some(a => a.id === id)) {
       return id;
     }
-    const scene = scenes.find(s => s.id === id);
-    return scene?.act_id;
+    for (const actId in scenesByAct) {
+      if (scenesByAct[actId].some(scene => scene.id === id)) {
+        return actId;
+      }
+    }
+    return undefined;
   };
 
   /**
    * Handles the start of a drag operation.
-   * It sets the active scene ID.
+   * It sets the active scene ID and the act ID of the scene being dragged.
    * @param {DragStartEvent} event The drag start event object from dnd-kit.
    */
   const handleDragStart = (event: DragStartEvent) => {
@@ -80,6 +97,7 @@ export const DraggableBoard: React.FC<DraggableBoardProps> = ({
    */
   const handleDragOver = (event: DragOverEvent) => {
     const { over } = event;
+    console.log('DRAG OVER', { over });
     const overId = over?.id as string | undefined;
     if (!overId) return;
 
@@ -98,70 +116,80 @@ export const DraggableBoard: React.FC<DraggableBoardProps> = ({
     const { active, over } = event;
     console.log('DRAG END', { active, over });
 
-    if (!over) {
+    if (!active || !over) { // If active or over is null/undefined, something went wrong or dropped outside
       setActiveId(null);
+      setOverActId(null);
       return;
     }
 
-    const activeId = active.id as string;
-    const overId = over.id as string;
+    const activeContainerId = findContainer(active.id as string);
+    const overContainerId = findContainer(over.id as string);
 
-    const activeContainer = findContainer(activeId);
-    let overContainer = findContainer(overId);
-    
-    const overScene = scenes.find(s => s.id === overId);
-    if (overScene) {
-      overContainer = overScene.act_id;
-    }
-
-    console.log('CONTAINERS', { activeContainer, overContainer });
-
-    if (!activeContainer || !overContainer) {
+    // If active and over items are from invalid containers, reset
+    if (!activeContainerId || !overContainerId) {
       setActiveId(null);
+      setOverActId(null);
       return;
     }
 
-    let newScenes: Scene[] = [];
+    // Create a mutable copy of scenes organized by act
+    const newScenesByAct = { ...scenesByAct };
 
-    if (activeContainer === overContainer) {
-      const activeIndex = scenes.findIndex(s => s.id === activeId);
-      const overIndex = scenes.findIndex(s => s.id === overId);
+    if (activeContainerId === overContainerId) {
+      // Reordering within the same act
+      const currentActScenes = newScenesByAct[activeContainerId];
+      const activeIndex = currentActScenes.findIndex(s => s.id === active.id);
+      const overIndex = currentActScenes.findIndex(s => s.id === over.id);
+
       if (activeIndex !== -1 && overIndex !== -1) {
-        newScenes = arrayMove(scenes, activeIndex, overIndex);
+        newScenesByAct[activeContainerId] = arrayMove(currentActScenes, activeIndex, overIndex);
       }
     } else {
-      const activeIndex = scenes.findIndex(s => s.id === activeId);
-      if (activeIndex === -1) return;
-
-      const movedScenes = [...scenes];
-      const [movedScene] = movedScenes.splice(activeIndex, 1);
-      movedScene.act_id = overContainer;
-
-      const overIndex = movedScenes.findIndex(s => s.id === overId);
-      if (overIndex !== -1) {
-        movedScenes.splice(overIndex, 0, movedScene);
-        newScenes = movedScenes;
-      } else {
-        const actsOrder = acts.map(a => a.id);
-        const overActIndex = actsOrder.indexOf(overContainer);
-        let lastSceneIndex = -1;
-        for (let i = overActIndex - 1; i >= 0; i--) {
-          const prevActId = actsOrder[i];
-          const lastSceneOfPrevAct = movedScenes.map(s => s.act_id).lastIndexOf(prevActId);
-          if (lastSceneOfPrevAct !== -1) {
-            lastSceneIndex = lastSceneOfPrevAct;
-            break;
-          }
-        }
-        movedScenes.splice(lastSceneIndex + 1, 0, movedScene);
-        newScenes = movedScenes;
+      // Moving to a different act
+      const activeScene = scenes.find(s => s.id === active.id);
+      if (!activeScene) {
+        setActiveId(null);
+        setOverActId(null);
+        return;
       }
+
+      // Remove from old container
+      newScenesByAct[activeContainerId] = newScenesByAct[activeContainerId].filter(s => s.id !== active.id);
+
+      // Add to new container
+      const overScenes = newScenesByAct[overContainerId];
+      const overIndex = overScenes.findIndex(s => s.id === over.id); // Find where to insert in the new act
+      
+      const movedScene = { ...activeScene, act_id: overContainerId }; // Update act_id of the moved scene
+
+      if (overIndex !== -1) {
+        overScenes.splice(overIndex, 0, movedScene);
+      } else {
+        // If dropping onto an empty act or directly on the act container
+        overScenes.push(movedScene);
+      }
+      newScenesByAct[overContainerId] = [...overScenes]; // Ensure immutability
     }
 
-    onScenesChange(newScenes);
+    // Flatten newScenesByAct back into a single array and update scene_numbers
+    const finalScenes: Scene[] = [];
+    acts.forEach(act => {
+      newScenesByAct[act.id].forEach((scene, index) => {
+        finalScenes.push({ ...scene, act_id: act.id, scene_number: index + 1 });
+      });
+    });
+
+    onScenesChange(finalScenes); // Notify parent of the updated scenes
     setActiveId(null);
     setOverActId(null);
   };
+
+  /**
+   * Find the active scene object based on its ID.
+   * @returns {Scene | undefined} The active scene object or undefined if not found.
+   */
+  const activeScene = activeId ? scenes.find((scene) => scene.id === activeId) : undefined;
+
 
   return (
     <DndContext
@@ -174,19 +202,23 @@ export const DraggableBoard: React.FC<DraggableBoardProps> = ({
       <div className={`board-container layout-${settings.layout_direction}`} style={{ '--act-count': settings.act_structure } as React.CSSProperties}>
         <div className="acts-grid">
           {acts.map((act) => (
-            <SortableContext key={act.id} items={scenes.filter(s => s.act_id === act.id).map(s => s.id)} strategy={settings.layout_direction === 'vertical' ? verticalListSortingStrategy : horizontalListSortingStrategy}>
-              <div className={`act-cell ${overActId === act.id ? 'dragging-over' : ''}`} style={{ '--cell-ratio': act.cell_dimension_ratio } as React.CSSProperties}>
-                <header className="act-header"><h3>Act {act.act_number}</h3></header>
-                <div className="scene-list">
-                  {scenes.filter(s => s.act_id === act.id).map(s => <SceneCard key={s.id} scene={s} onOpenDetail={() => onSceneOpen(s)} />)}
-                  {scenes.filter(s => s.act_id === act.id).length === 0 && <div className="scene-card-empty placeholder"><span>Empty Act</span></div>}
-                </div>
-                <div className="resize-handle" onMouseDown={(e) => onResizeStart(e, act.id)}><div className="handle-icon"></div></div>
-              </div>
-            </SortableContext>
+            <ActCell
+              key={act.id}
+              act={act}
+              scenes={scenesByAct[act.id]} // Pass filtered scenes from memoized object
+              layoutDirection={settings.layout_direction}
+              overActId={overActId}
+              onSceneOpen={onSceneOpen}
+              onResizeStart={onResizeStart}
+            />
           ))}
         </div>
       </div>
+      <DragOverlay>
+        {activeScene ? (
+          <SceneCard scene={activeScene} />
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 };

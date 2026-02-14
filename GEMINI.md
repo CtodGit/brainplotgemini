@@ -35,12 +35,12 @@
   - Interaction: Smart FAB (adds to viewport-centered act), continuous auto-panning near edges, safety prompts.
   - Persistence: Full SQLite sync for all structural changes.
 
-- [ ] **Task #7: The Scene Card — Full Lifecycle Implementation**
+✅ [x] **Task #7: The Scene Card — Full Lifecycle Implementation**
   - ✅ **1. Creation Flow**: Red FAB (+) opens the Universal Modal in "Create Mode" (pre-placement).
   - ✅ **2. Detail View (Level 2)**: Universal 85% centered modal with Read-Only/Edit states. Metadata: Title, Location, Time, Cast List placeholder.
   - ✅ **3. Card Face (Level 1)**: 16:9 layout, hero image area, and metadata indicators. Fit-to-cell scaling.
   - ✅ **4. Placement & Saving**: "Apply" action saves the scene to SQLite and renders it on the board.
-  - [ ] **5. Re-arrangement**: Drag-and-drop reordering within an act and movement between different acts.
+  - ✅ [x] **5. Re-arrangement**: Drag-and-drop reordering within an act and movement between different acts.
   - ✅ [x] **6. Entry Protocol**: Double-tap/click card or snapshot to enter Level 3 Inspiration Board.
 
 - [ ] **Task #8: Level 3 — Scene Inspiration Board (Full-Screen Workspace)**
